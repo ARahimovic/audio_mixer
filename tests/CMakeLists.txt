@@ -8,6 +8,7 @@ add_executable(unit_tests
     BadCodecWriterTests.cpp
     FileAudioSourceTests.cpp
     FileAudioSinkTests.cpp
+    FileVolumeControllerTests.cpp
 )
 
 target_link_libraries(unit_tests PRIVATE audiomixer GTest::gtest_main)

@@ -12,6 +12,7 @@ add_library(audiomixer STATIC
     src/parser/BadCodecWriter.cpp
     src/io/FileAudioSource.cpp
     src/io/FileAudioSink.cpp
+    src/control/FileVolumeController.cpp
 )
 
 target_include_directories(audiomixer PUBLIC include)
