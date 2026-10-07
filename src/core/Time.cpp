@@ -19,4 +19,14 @@ namespace AudioMixer
         return (scaled + MICROS_IN_SECOND / 2) / MICROS_IN_SECOND;
     }
 
+    Clock::time_point Timeline::arrivalTime(Micros time) const
+    {
+        return wallStart + std::chrono::microseconds(time - streamStart);
+    }
+
+    Clock::time_point Timeline::playTime(Micros time) const
+    {
+        return arrivalTime(time) + playbackDelay;
+    }
+
 }

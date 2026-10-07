@@ -13,7 +13,7 @@ namespace AudioMixer
 namespace
 {
 
-TEST(BadCodecWriterTest, WritesExactSixteenBitBytes)
+TEST(BadCodecWriterTest, CorrectWrite)
 {
     std::ostringstream output(std::ios::binary | std::ios::out);
     BadCodecWriter writer(output, AudioFormat{48000, 16});
@@ -52,7 +52,7 @@ TEST(BadCodecWriterTest, WriterReaderLoop)
     EXPECT_EQ(decoded->samples, original.samples);
 }
 
-TEST(BadCodecWriterTest, RejectsUnsupportedFormat)
+TEST(BadCodecWriterTest, UnsupportedFormat)
 {
     std::ostringstream output(std::ios::binary | std::ios::out);
 

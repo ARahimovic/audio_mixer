@@ -10,6 +10,8 @@ add_library(audiomixer STATIC
     src/core/FilterChain.cpp
     src/parser/BadCodecReader.cpp
     src/parser/BadCodecWriter.cpp
+    src/io/FileAudioSource.cpp
+    src/io/FileAudioSink.cpp
 )
 
 target_include_directories(audiomixer PUBLIC include)
