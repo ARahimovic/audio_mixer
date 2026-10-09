@@ -12,6 +12,7 @@ add_executable(unit_tests
     AudioQueueTests.cpp
     FeedTests.cpp
     MixerTests.cpp
+    EndToEndTests.cpp
 )
 
 target_link_libraries(unit_tests PRIVATE audiomixer GTest::gtest_main)

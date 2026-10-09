@@ -18,6 +18,7 @@ add_library(audiomixer STATIC
     src/core/Feed.cpp
     src/core/Mixer.cpp
     src/audioEngine/AudioEngine.cpp
+    src/app/Pipeline.cpp
 )
 
 target_include_directories(audiomixer PUBLIC include)
