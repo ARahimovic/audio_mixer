@@ -76,6 +76,29 @@ void writeConstantAudioBlocks(const std::string& path, Micros startTime,
   }
 }
 
+void writeRampAudioBlocks(const std::string& path, Micros startTime,
+                          std::size_t blockPeriod_ms,
+                          const AudioFormat& outputFormat,
+                          std::size_t blockCount, Sample step) {
+  const std::size_t samplesPerBlock =
+      outputFormat.sampleRate * blockPeriod_ms / 1000;
+  std::ofstream file(path, std::ios::binary);
+  BadCodecWriter writer(file, outputFormat);
+
+  Micros time = startTime;
+  Sample value = 0;
+  // the ramp continues across blocks: 0, step, 2*step, ...
+  for (std::size_t i = 0; i < blockCount; ++i) {
+    AudioBlock block{time, std::vector<Sample>(samplesPerBlock)};
+    for (auto& sample : block.samples) {
+      sample = value;
+      value += step;
+    }
+    writer.writeAudioBlock(block);
+    time += blockPeriod_ms * 1000;
+  }
+}
+
 void printAudioFileContent(const std::string& path) {
   std::ifstream file(path, std::ios::binary);
   BadCodecReader reader(file);

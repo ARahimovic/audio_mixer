@@ -77,4 +77,45 @@ TEST(EndToEndTest, FeedStartingLaterIsSilentUntilItStarts) {
   std::remove(outPath.c_str());
 }
 
+TEST(EndToEndTest, TestDifferentSampleRatesAndInterpolation) {
+  const Sample unit = 1 << 16;
+  const AudioFormat outputFormat{16000, 16};
+  const std::vector<std::string> feedPaths = {"feed0.bc", "feed1.bc",
+                                              "feed2.bc"};
+
+  // 8 kHz ramp 0, 2, 4, ... upsampled to 16 kHz becomes 0, 1, 2, 3, ...
+  writeRampAudioBlocks(feedPaths[0], start, 10, {8000, 16}, 2, 2 * unit);
+  // constant feeds at 44.1 kHz and 96 kHz (32 bit)
+  writeConstantAudioBlocks(feedPaths[1], start, 10, {44100, 16},
+                           {100 * unit, 100 * unit});
+  writeConstantAudioBlocks(feedPaths[2], start, 10, {96000, 32},
+                           {-50 * unit, -50 * unit});
+
+  { std::ofstream volume(volumePath); }  // all volumes stay at 100%
+
+  runPipeline(feedPaths, volumePath, outPath, outputFormat);
+  const AudioFile out = readAudioFile(outPath);
+
+  ASSERT_EQ(out.blocks.size(), 2);
+  std::vector<Sample> expected;
+
+  // first 10 ms block at 16 kHz is 160 samples: k + 100 - 50
+  for (Sample k = 0; k < 320; ++k) expected.push_back((k + 50) * unit);
+
+  // the last sample interpolates towards silence: no input after the ramp ends
+  // output: 159 + 100 - 50 = 209  instead of 369
+  expected.back() = 209 * unit;
+
+  std::vector<Sample> actual = out.blocks[0].samples;
+  actual.insert(actual.end(), out.blocks[1].samples.begin(),
+                out.blocks[1].samples.end());
+
+  EXPECT_EQ(actual, expected);
+
+  for (const auto& path : feedPaths) std::remove(path.c_str());
+
+  std::remove(volumePath.c_str());
+  std::remove(outPath.c_str());
+}
+
 }  // namespace AudioMixer

@@ -23,6 +23,10 @@ void writeConstantAudioBlocks(const std::string& path, Micros startTime,
                               std::size_t blockPeriod_ms,
                               const AudioFormat& outputFormat,
                               const std::vector<Sample>& values);
+void writeRampAudioBlocks(const std::string& path, Micros startTime,
+                          std::size_t blockPeriod_ms,
+                          const AudioFormat& outputFormat,
+                          std::size_t blockCount, Sample step);
 
 Micros earliestStart(const std::vector<std::string>& paths);
 
